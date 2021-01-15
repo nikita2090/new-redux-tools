@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { selectCount } from './counterSlice';
-import { increment, decrement, incrementByAmount } from './counterSlice';
+import {
+    increment,
+    decrement,
+    incrementByAmount,
+    incrementAsync,
+} from './counterSlice';
 
 const Counter: React.FC = () => {
     const dispatch = useDispatch();
@@ -26,10 +31,17 @@ const Counter: React.FC = () => {
         }
         setIncreaseAmount(value);
     };
+
     const handleIncrementByAmount = (
         e: React.MouseEvent<HTMLButtonElement>
     ) => {
         dispatch(incrementByAmount(increaseAmount));
+    };
+
+    const handleAsyncIncrementByAmount = (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        dispatch(incrementAsync(increaseAmount, 1000));
     };
     return (
         <div>
@@ -38,6 +50,9 @@ const Counter: React.FC = () => {
             <button onClick={handleDecrement}>-</button>
             <input value={increaseAmount} onChange={handleInputChange} />
             <button onClick={handleIncrementByAmount}>+ amount</button>
+            <button onClick={handleAsyncIncrementByAmount}>
+                + async amount
+            </button>
         </div>
     );
 };

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Dispatch } from '@reduxjs/toolkit';
 
 import { IStore } from '../../store';
 
@@ -23,6 +24,14 @@ export const counterSlice = createSlice({
         },
     },
 });
+
+export const incrementAsync = (amount: number, ms: number) => (
+    dispatch: Dispatch
+) => {
+    setTimeout(() => {
+        dispatch(incrementByAmount(amount));
+    }, ms);
+};
 
 export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 export const selectCount = (state: IStore): number => state.counter.value;
