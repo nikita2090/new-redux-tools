@@ -20,10 +20,14 @@ export interface IResponse {
     results: IRes[];
 }
 
-export const fetchUserData = createAsyncThunk('userName/fetch', async () => {
-    const res = await axios('https://randomuser.me/api/?inc=name');
-    return res.data as IResponse;
-});
+export const fetchUserData = createAsyncThunk(
+    'userName/fetch',
+    async (arg, thunkAPI) => {
+        console.log(arg, thunkAPI);
+        const res = await axios('https://randomuser.me/api/?inc=name');
+        return res.data as IResponse;
+    }
+);
 
 export interface IUserNameSlice {
     name: string;
@@ -47,7 +51,7 @@ export const userNameSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchUserData.pending, (state, action) => {
+            .addCase(fetchUserData.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(fetchUserData.fulfilled, (state, action) => {
