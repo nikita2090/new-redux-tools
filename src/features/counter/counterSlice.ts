@@ -27,7 +27,7 @@ export const counterSlice = createSlice({
 
 export const incrementAsync = (amount: number, ms: number) => (
     dispatch: Dispatch
-) => {
+): void => {
     setTimeout(() => {
         dispatch(incrementByAmount(amount));
     }, ms);
