@@ -5,7 +5,8 @@ import {
 } from '@reduxjs/toolkit';
 
 import axios from 'axios';
-import { IStore } from '../../store';
+
+import { RootState } from '../../store';
 
 export interface IRes {
     name: {
@@ -66,6 +67,6 @@ export const userNameSlice = createSlice({
     },
 });
 
-export const userNameSelector = (state: IStore): IUserNameSlice =>
+export const userNameSelector = (state: RootState): IUserNameSlice =>
     state.userName;
 export default userNameSlice.reducer;

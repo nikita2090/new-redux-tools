@@ -4,10 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectCount } from './counterSlice';
 import * as actions from './counterSlice';
 
+// import { selectCount } from './basicCounter';
+// import * as actions from './basicCounter';
+
 const Counter: React.FC = () => {
     const dispatch = useDispatch();
 
     const counter = useSelector(selectCount);
+    // const counter = useSelector((state) => console.log(state));
+    console.log(counter);
 
     const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
         dispatch(actions.increment());

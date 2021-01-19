@@ -1,15 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import counterReducer from './features/counter/counterSlice';
-import userNameReducer, {
-    IUserNameSlice,
-} from './features/userName/userNameSlice';
-
-import { ICounterSlice } from './features/counter/counterSlice';
-
-export interface IStore {
-    counter: ICounterSlice;
-    userName: IUserNameSlice;
-}
+// import counterReducer from './features/counter/basicCounter';
+import userNameReducer from './features/userName/userNameSlice';
 
 export const store = configureStore({
     reducer: {

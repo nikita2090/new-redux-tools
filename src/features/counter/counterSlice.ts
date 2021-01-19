@@ -1,11 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { IStore } from '../../store';
-
-export interface ICounterSlice {
-    value: number;
-}
+import { RootState } from '../../store';
 
 export const counterSlice = createSlice({
     name: 'counter',
@@ -34,5 +30,5 @@ export const incrementAsync = (amount: number, ms: number) => (
 };
 
 export const { increment, decrement, incrementByAmount } = counterSlice.actions;
-export const selectCount = (state: IStore): number => state.counter.value;
+export const selectCount = (state: RootState): number => state.counter.value;
 export default counterSlice.reducer;
