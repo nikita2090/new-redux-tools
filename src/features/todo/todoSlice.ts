@@ -50,10 +50,13 @@ const todoSlice = createSlice({
             state.list = state.list.filter(
                 (item) => item.id !== action.payload
             );
-            console.log(state.list);
+            if (!state.list.length) {
+                nextTodoId = 0;
+            }
         },
         cleanAll: (state) => {
             state.list = [];
+            nextTodoId = 0;
         },
 
         changeFilter: (state, action: PayloadAction<Filter>) => {

@@ -11,8 +11,6 @@ const Counter: React.FC = () => {
     const dispatch = useDispatch();
 
     const counter = useSelector(selectCount);
-    // const counter = useSelector((state) => console.log(state));
-    console.log(counter);
 
     const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
         dispatch(actions.increment());
