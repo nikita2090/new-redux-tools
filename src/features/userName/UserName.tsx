@@ -16,14 +16,17 @@ const UserName: React.FC = () => {
 
     const renderResult = () => {
         let result;
-        if (error) {
-            result = <div>Error</div>;
-        }
 
-        if (status === 'loading') {
-            result = <div>Loading..</div>;
-        } else {
-            result = <div>My name is {name}</div>;
+        switch (status) {
+            case 'failed':
+                result = <div>{error}</div>;
+                break;
+            case 'loading':
+                result = <div>Loading..</div>;
+                break;
+            default:
+                result = <div>My name is {name}</div>;
+                break;
         }
         return result;
     };

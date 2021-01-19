@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+    createAsyncThunk,
+    createSlice,
+    SerializedError,
+} from '@reduxjs/toolkit';
+
 import axios from 'axios';
 import { IStore } from '../../store';
 
@@ -32,7 +37,7 @@ export const fetchUserData = createAsyncThunk(
 export interface IUserNameSlice {
     name: string;
     status: 'idle' | 'loading' | 'success' | 'failed';
-    error: null | string;
+    error: null | SerializedError;
 }
 
 const initialState: IUserNameSlice = {
@@ -40,10 +45,6 @@ const initialState: IUserNameSlice = {
     status: 'idle',
     error: null,
 };
-
-interface IError {
-    error: string;
-}
 
 export const userNameSlice = createSlice({
     name: 'userName',
@@ -60,7 +61,7 @@ export const userNameSlice = createSlice({
             })
             .addCase(fetchUserData.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = (action.payload as IError).error;
+                state.error = action.error;
             });
     },
 });
