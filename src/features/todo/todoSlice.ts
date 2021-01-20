@@ -1,7 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
-interface ITodoItem {
+export interface ITodoItem {
     name: string;
     id: number;
     isCompleted: boolean;
@@ -62,6 +62,10 @@ const todoSlice = createSlice({
         changeFilter: (state, action: PayloadAction<Filter>) => {
             state.activeFilter = action.payload;
         },
+        // for shallowEqual test
+        returnSameList: (state) => {
+            state.list = [...state.list];
+        },
     },
 });
 
@@ -71,6 +75,7 @@ export const {
     remove,
     cleanAll,
     changeFilter,
+    returnSameList,
 } = todoSlice.actions;
 
 export const todoListSelector = (state: RootState): ITodoItem[] =>
@@ -78,9 +83,26 @@ export const todoListSelector = (state: RootState): ITodoItem[] =>
 export const filterSelector = (state: RootState): Filter =>
     state.todo.activeFilter;
 
+// incorrect - useless computations
+export const filtered = (state: RootState): ITodoItem[] => {
+    console.log('filter');
+    switch (state.todo.activeFilter) {
+        case 'all':
+            return state.todo.list;
+        case 'finished':
+            return state.todo.list.filter((item) => item.isCompleted);
+        case 'unfinished':
+            return state.todo.list.filter((item) => !item.isCompleted);
+        default:
+            throw new Error('Unknown filter');
+    }
+};
+
+// correct - returns memoized value
 export const filteredTodosSelector = createSelector(
     [todoListSelector, filterSelector],
     (list, filter) => {
+        console.log('selector');
         switch (filter) {
             case 'all':
                 return list;

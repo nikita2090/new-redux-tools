@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { filterSelector, filteredTodosSelector } from './todoSlice';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import {
+    filterSelector,
+    filteredTodosSelector /*filtered*/,
+} from './todoSlice';
 import * as actions from './todoSlice';
 
 import { Filter } from './todoSlice';
@@ -24,7 +27,10 @@ const filters = [
 
 const Todos: React.FC = () => {
     const dispatch = useDispatch();
-    const todos = useSelector(filteredTodosSelector);
+    // shallow equal skips re-rendering when CONTENT of selected state is same, but state is new
+    const todos = useSelector(filteredTodosSelector, shallowEqual);
+
+    //const todos = useSelector(filtered);
 
     const [todoItemText, setTodoItemText] = useState('');
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +66,9 @@ const Todos: React.FC = () => {
         dispatch(actions.changeFilter(e.target.value as Filter));
     };
 
+    const handleReturnSameState = (e: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch(actions.returnSameList());
+    };
     return (
         <>
             <h1>Todos</h1>
@@ -81,7 +90,6 @@ const Todos: React.FC = () => {
                 ))}
             </ul>
             <button onClick={handleCleanAllClick}>Clean all</button>
-            {/* eslint-disable-next-line jsx-a11y/no-onchange */}
             <select value={filter} onChange={handleFilterChange}>
                 {filters.map(({ name, value }) => (
                     <option key={value} value={value}>
@@ -89,6 +97,7 @@ const Todos: React.FC = () => {
                     </option>
                 ))}
             </select>
+            <button onClick={handleReturnSameState}>return same list</button>
         </>
     );
 };
