@@ -1,7 +1,8 @@
 import {
     createEntityAdapter,
+    createSelector,
     createSlice,
-    // PayloadAction,
+    PayloadAction,
 } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
@@ -13,28 +14,77 @@ export interface ITodoItem {
 
 export type Filter = 'all' | 'finished' | 'unfinished';
 
-// interface ITodoState {
-//     ids: number[];
-//     entities: ITodoItem;
-//     activeFilter: Filter;
-// }
-
 const todoAdapter = createEntityAdapter<ITodoItem>();
 
-// const nextTodoId = 0;
+let nextTodoId = 0;
 
 const todoSlice = createSlice({
     name: 'todoAdapter',
-    initialState: todoAdapter.getInitialState(),
+    initialState: todoAdapter.getInitialState({
+        activeFilter: 'all' as Filter,
+    }),
     reducers: {
         // eslint-disable-next-line @typescript-eslint/unbound-method
-        add: todoAdapter.addOne,
+        add: {
+            reducer: (state, action: PayloadAction<ITodoItem>) => {
+                todoAdapter.addOne(state, action.payload);
+            },
+            prepare: (name: string) => ({
+                payload: {
+                    name,
+                    id: nextTodoId++,
+                    isCompleted: false,
+                },
+            }),
+        },
+        complete: (state, action: PayloadAction<number>) => {
+            const currentItem = state.entities[action.payload];
+            if (currentItem) {
+                currentItem.isCompleted = !currentItem.isCompleted;
+            }
+        },
+        remove: (state, action: PayloadAction<number>) => {
+            todoAdapter.removeOne(state, action.payload);
+        },
+        cleanAll: (state) => {
+            todoAdapter.removeAll(state);
+            nextTodoId = 0;
+        },
+        changeFilter: (state, action: PayloadAction<Filter>) => {
+            state.activeFilter = action.payload;
+        },
     },
 });
 
-export const { add } = todoSlice.actions;
+export const {
+    add,
+    complete,
+    remove,
+    cleanAll,
+    changeFilter,
+} = todoSlice.actions;
 
-export const { selectAll } = todoAdapter.getSelectors(
+export const { selectAll: allTodos } = todoAdapter.getSelectors(
     (state: RootState) => state.todoAdapter
 );
+
+export const filterSelector = (state: RootState): Filter =>
+    state.todoAdapter.activeFilter;
+
+export const filteredTodosSelector = createSelector(
+    [allTodos, filterSelector],
+    (list, filter) => {
+        switch (filter) {
+            case 'all':
+                return list;
+            case 'finished':
+                return list.filter((item) => item.isCompleted);
+            case 'unfinished':
+                return list.filter((item) => !item.isCompleted);
+            default:
+                throw new Error('Unknown filter');
+        }
+    }
+);
+
 export default todoSlice.reducer;

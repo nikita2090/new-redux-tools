@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import * as actions from './todoWithAdapterSlice';
-import { selectAll } from './todoWithAdapterSlice';
-
-//import { Filter } from './todoSlice';
+import {
+    filteredTodosSelector,
+    filterSelector,
+    Filter,
+} from './todoWithAdapterSlice';
 
 import styles from './Todos.module.scss';
 
@@ -26,10 +28,7 @@ const filters = [
 const TodosAdapter: React.FC = () => {
     const dispatch = useDispatch();
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const todos = useSelector((state) => selectAll(state));
-    console.log(todos);
+    const todos = useSelector(filteredTodosSelector);
 
     const [todoItemText, setTodoItemText] = useState('');
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,40 +39,30 @@ const TodosAdapter: React.FC = () => {
         if (todoItemText === '') {
             return;
         }
-        dispatch(
-            actions.add({
-                name: todoItemText,
-                isCompleted: false,
-                id: Math.random(),
-            })
-        );
+        dispatch(actions.add(todoItemText));
         setTodoItemText('');
     };
 
-    // const completeItem = (
-    //     e: React.MouseEvent<HTMLButtonElement>,
-    //     id: number
-    // ) => {
-    //     dispatch(actions.complete(id));
-    // };
-    //
-    // const removeItem = (e: React.MouseEvent, id: number) => {
-    //     dispatch(actions.remove(id));
-    // };
-    //
-    // const handleCleanAllClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    //     dispatch(actions.cleanAll());
-    // };
-    //
-    // const filter = useSelector(filterSelector);
-    //
-    // const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    //     dispatch(actions.changeFilter(e.target.value as Filter));
-    // };
-    //
-    // const handleReturnSameState = (e: React.MouseEvent<HTMLButtonElement>) => {
-    //     dispatch(actions.returnSameList());
-    // };
+    const completeItem = (
+        e: React.MouseEvent<HTMLButtonElement>,
+        id: number
+    ) => {
+        dispatch(actions.complete(id));
+    };
+
+    const removeItem = (e: React.MouseEvent, id: number) => {
+        dispatch(actions.remove(id));
+    };
+
+    const handleCleanAllClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch(actions.cleanAll());
+    };
+
+    const filter = useSelector(filterSelector);
+
+    const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        dispatch(actions.changeFilter(e.target.value as Filter));
+    };
 
     return (
         <>
@@ -81,9 +70,9 @@ const TodosAdapter: React.FC = () => {
             <input value={todoItemText} onChange={handleInputChange} />
             <button onClick={handleAddItemClick}>Add</button>
             <ul className={styles.list}>
-                {todos.map(({ name, isCompleted }, i: number) => (
+                {todos.map(({ name, isCompleted, id }, i: number) => (
                     <li key={i} className={styles.item}>
-                        {/*<button onClick={(e) => completeItem(e, id)}>+</button>*/}
+                        <button onClick={(e) => completeItem(e, id)}>+</button>
                         <span
                             className={
                                 isCompleted ? styles.completed : undefined
@@ -91,19 +80,18 @@ const TodosAdapter: React.FC = () => {
                         >
                             {name}
                         </span>
-                        {/*<button onClick={(e) => removeItem(e, id)}>del</button>*/}
+                        <button onClick={(e) => removeItem(e, id)}>del</button>
                     </li>
                 ))}
             </ul>
-            {/*<button onClick={handleCleanAllClick}>Clean all</button>*/}
-            {/*<select value={filter} onChange={handleFilterChange}>*/}
-            {/*    {filters.map(({ name, value }) => (*/}
-            {/*        <option key={value} value={value}>*/}
-            {/*            {name}*/}
-            {/*        </option>*/}
-            {/*    ))}*/}
-            {/*</select>*/}
-            {/*<button onClick={handleReturnSameState}>return same list</button>*/}
+            <button onClick={handleCleanAllClick}>Clean all</button>
+            <select value={filter} onChange={handleFilterChange}>
+                {filters.map(({ name, value }) => (
+                    <option key={value} value={value}>
+                        {name}
+                    </option>
+                ))}
+            </select>
         </>
     );
 };
