@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectCount } from './counterSlice';
+import { selectCount, selectLoading } from './counterSlice';
 import * as actions from './counterSlice';
 
 // import { selectCount } from './basicCounter';
@@ -11,6 +11,7 @@ const Counter: React.FC = () => {
     const dispatch = useDispatch();
 
     const counter = useSelector(selectCount);
+    const loading = useSelector(selectLoading);
 
     const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
         dispatch(actions.increment());
@@ -36,21 +37,32 @@ const Counter: React.FC = () => {
         dispatch(actions.incrementByAmount(increaseAmount));
     };
 
-    const handleAsyncIncrementByAmount = (
+    const handleAsyncIncrementByAmountThunk = (
         e: React.MouseEvent<HTMLButtonElement>
     ) => {
         dispatch(actions.incrementAsync(increaseAmount, 1000));
     };
+
+    const handleAsyncIncrementByAmountSaga = (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        dispatch(
+            actions.incrementWithSaga({ amount: increaseAmount, ms: 1000 })
+        );
+    };
     return (
         <>
             <h1>Counter</h1>
-            <p>Count: {counter}</p>
+            <p>{loading ? 'Loading...' : `Count: ${counter}`}</p>
             <button onClick={handleIncrement}>+</button>
             <button onClick={handleDecrement}>-</button>
             <input value={increaseAmount} onChange={handleInputChange} />
             <button onClick={handleIncrementByAmount}>+ amount</button>
-            <button onClick={handleAsyncIncrementByAmount}>
-                + async amount
+            <button onClick={handleAsyncIncrementByAmountThunk}>
+                + async amount (thunk)
+            </button>
+            <button onClick={handleAsyncIncrementByAmountSaga}>
+                + async amount (saga)
             </button>
         </>
     );
