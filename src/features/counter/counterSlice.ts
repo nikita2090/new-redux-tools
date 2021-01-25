@@ -44,10 +44,6 @@ export const incrementWithSaga = createAction<IIncrementWithSaga>(
     'counter/incrementWithSaga'
 );
 
-export const incrementWithSaga2 = createAction<IIncrementWithSaga>(
-    'counter/incrementWithSaga'
-);
-
 export const {
     increment,
     decrement,

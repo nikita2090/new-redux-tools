@@ -1,16 +1,14 @@
 import { takeLatest, put, delay } from 'redux-saga/effects';
 import {
     incrementWithSaga,
-    incrementWithSaga2,
     incrementByAmount,
     changeLoading,
 } from './counterSlice';
 
 import { IIncrementWithSaga } from './counterSlice';
 
-export default function* counterWatcher() {
+export default function* counterWatcher(): Generator {
     yield takeLatest(incrementWithSaga.type, handleSagaIncrement);
-    yield takeLatest(incrementWithSaga2.type, handleSagaIncrement);
 }
 
 interface IIncrementSagaAction {
