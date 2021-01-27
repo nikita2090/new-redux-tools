@@ -16,7 +16,7 @@ interface IIncrementSagaAction {
     type: string;
 }
 
-function* handleSagaIncrement(action: IIncrementSagaAction) {
+function* handleSagaIncrement(action: IIncrementSagaAction): Generator {
     const {
         payload: { amount, ms },
     } = action;
